@@ -33,10 +33,10 @@ export default function Home({navigation, route}) {
     }, []);
 
     return loading ? <ActivityIndicator style={styles.container} size="large" color="#00ff00" /> : (
-        <View style={styles.container}>
-            <ScrollView>
+        <View style={[styles.container]}>
+            <ScrollView style={{left: 5}}>
                 <Text style={styles.h2}>Most recent</Text>
-                {last ? <TouchableOpacity style={{flexDirection: 'row', width: '100%'}} onPress={e => {
+                {last ? <TouchableOpacity style={{flexDirection: 'row', width: '97%', alignSelf: 'center'}} onPress={e => {
                     navigation.navigate('Track', {params: {id: last.id}});
                 }}>
                     <Image source={{uri: last.imageUrl}} style={{width: 120, height: 120, borderRadius: 5}} />
@@ -71,12 +71,12 @@ export default function Home({navigation, route}) {
                         return (
                             <TouchableOpacity onPress={e => {
                                 navigation.navigate('Track', {params: {id: track.id}});
-                            }} key={index} style={{backgroundColor: 'none', flexDirection: 'row', marginBottom: 10, width: '90%', borderRadius: 10}}>
+                            }} key={index} style={{backgroundColor: 'none', flexDirection: 'row', marginBottom: 10, width: '100%', borderRadius: 10, left: 5}}>
                                 <Image source={{uri: track.imageUrl}} style={{width: 80, height: 80, borderRadius: 5}} />
-                                <View style={{textAlign: 'left', justifyContent: 'center', flex: 1}}>
+                                <View style={{textAlign: 'left', justifyContent: 'center', flex: 1, width: '100%'}}>
                                     <Text style={{color: 'white', left: 5}}>{track.name}</Text>
                                     <Text style={{color: '#bdbdbd', left: 5}}>{artistString}</Text>
-                                    <Text style={{color: 'white', right: 5, position: 'absolute', fontSize: 17}}>{index+1}</Text>
+                                    <Text style={{color: 'white', right: 20, position: 'absolute', fontSize: 17}}>{index+1}</Text>
                                 </View>
                             </TouchableOpacity>
                         )

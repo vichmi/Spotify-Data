@@ -3,6 +3,7 @@ import { View, Text, Animated, ScrollView, TouchableOpacity, Image, ActivityIndi
 import axios from '../utils/apikit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import refreshAccessToken from '../utils/refreshAccessToken'
+import { StatusBar } from 'react-native';
 
 
 
@@ -36,7 +37,8 @@ export default function Playlist({navigation, route}) {
             <Animated.View style={[{
                 opacity: fadeAnim
             }, styles.container]}>
-                <ScrollView style={{marginTop: 60}}>
+            <StatusBar translucent backgroundColor='transparent' />
+                <ScrollView style={{marginTop: StatusBar.currentHeight+70}}>
                     {playlists.map((item, index) => {
                         return (
                             <TouchableOpacity style={{
@@ -47,7 +49,7 @@ export default function Playlist({navigation, route}) {
                                 backgroundColor: '#141414',
                                 borderRadius: 5
                             }} key={index} onPress={e => addToPlaylist(item.id, route.params.trackUri)}>
-                                <Image style={{width: 100, height: 100}} source={{uri: item.imageUrl}} />
+                                <Image style={{width: 100, height: 100, borderRadius: 7}} source={{uri: item.imageUrl}} />
                                 <Text style={{justifyContent: 'center', alignSelf: 'center', color:'white', left: 5}}>{item.name}</Text>
                             </TouchableOpacity>
                         )

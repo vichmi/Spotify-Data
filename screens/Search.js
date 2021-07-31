@@ -56,10 +56,9 @@ export default function Search({navigation}) {
                         </TouchableOpacity>)
                     }else return null;
                 })}
-                {items.tracks == null ? null : <Text style={{color: 'white', marginTop: 20}}>New</Text>}
                 {items.tracks == null ? null : items.tracks.items.map((item, key) => {
                     return (
-                        <TouchableOpacity key={key} style={{flexDirection: 'row', marginTop: 10}} onPress={async e => {
+                        <TouchableOpacity key={key} style={{flexDirection: 'row', marginTop: 10, left: 5}} onPress={async e => {
                             const result = JSON.parse(await AsyncStorage.getItem('search-items')) || [];
                             let res = result.filter(i => i.id == item.id)
                             if(!res[0])  {
@@ -68,7 +67,7 @@ export default function Search({navigation}) {
                             }
                             navigation.navigate('Track', {params: {id: item.id}});
                         }}>
-                            {item.album.images && item.album.images[1] && item.album.images[1].url ? <Image source={{uri: item.album.images[1].url}} style={{width: 65, height: 65}} /> : null}
+                            {item.album.images && item.album.images[1] && item.album.images[1].url ? <Image source={{uri: item.album.images[1].url}} style={{width: 65, height: 65, borderRadius: 10}} /> : null}
                             <View style={{alignSelf: 'center', left: 10}}>
                                 <Text style={{color: 'white'}}>{item.name}</Text> 
                                 <Text style={{color: '#bdbdbd'}}>Song</Text>
@@ -77,7 +76,7 @@ export default function Search({navigation}) {
                 })}
                 {items.artists ? items.artists.items.map((item, key) => {
                     return (
-                        <TouchableOpacity key={key} style={{flexDirection: 'row', marginTop: 10}} onPress={async e => {
+                        <TouchableOpacity key={key} style={{flexDirection: 'row', marginTop: 10, left: 5}} onPress={async e => {
                             const result = JSON.parse(await AsyncStorage.getItem('search-items')) || [];
                             let res = result.filter(i => i.id == item.id);
                             if(!res[0]) {
@@ -86,7 +85,7 @@ export default function Search({navigation}) {
                             }
                             navigation.navigate('Artist', {params: {id: item.id}});
                         }}>
-                            {item.images && item.images[1] && item.images[1].url ? <Image source={{uri: item.images[1].url}} style={{width: 65, height: 65}} /> : null}
+                            {item.images && item.images[1] && item.images[1].url ? <Image source={{uri: item.images[1].url}} style={{width: 65, height: 65, borderRadius: 10}} /> : null}
                             <View style={{alignSelf: 'center', left: 10}}>
                                 <Text style={{color: 'white'}}>{item.name}</Text> 
                                 <Text style={{color: '#bdbdbd'}}>Artist</Text>

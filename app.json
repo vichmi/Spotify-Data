@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#141414"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -23,10 +23,9 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "backgroundColor": "#141414"
       },
-      "userInterfaceStyle": "dark",
-      "package": "com.vichmi.Spotify-Data"
+      "package": "com.vichmi.Spotify.Data"
     },
     "web": {
       "favicon": "./assets/favicon.png"

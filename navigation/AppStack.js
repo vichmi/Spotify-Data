@@ -54,7 +54,7 @@ function HomeTab({route, navigation}) {
                     color: 'white',
                 },
                 headerRight: () => (
-                    <Ionicons name="information-circle" size={30} color={'#00FF56'} onPress={() => Alert.alert('Home Screen', 'This screen show you your recent played spotify songs. You can click on the song for more information')} />
+                    <Ionicons name="information-circle" style={{right: 5}} size={30} color={'#00FF56'} onPress={() => Alert.alert('Home Screen', 'This screen show you your recent played spotify songs. You can click on the song for more information')} />
                 ),
             }} />
             <HomeNavigator.Screen name='Track' component={STrackNav} options={{
@@ -80,7 +80,7 @@ function SearchTab({navigation, route}) {
                     color: 'white',
                 },
                 headerRight: () => (
-                    <Ionicons name="information-circle" size={30} color={'#00FF56'} onPress={() => Alert.alert('Search Screen', 'Here you can search for any song or artist')} />
+                    <Ionicons name="information-circle" style={{right: 5}} size={30} color={'#00FF56'} onPress={() => Alert.alert('Search Screen', 'Here you can search for any song or artist')} />
                 ),
             }} />
             <SearchNav.Screen name='Artist'  component={Artist} options={{
@@ -106,11 +106,15 @@ function ArtistsTab({navigation, route}) {
                     color: 'white',
                 },
                 headerRight: () => (
-                    <Ionicons name="information-circle" size={30} color={'#00FF56'} onPress={() => Alert.alert('Artist Screen', 'These are your most listened artist. You can click on the artist for more information')} />
+                    <Ionicons name="information-circle" style={{right: 5}} size={30} color={'#00FF56'} onPress={() => Alert.alert('Artist Screen', 'These are your most listened artist. You can click on the artist for more information')} />
                 ),
             }} />
             <ArtistsNavigator.Screen name='Artist' tabBarVisible={false}  component={Artist} options={{
-                headerShown: false
+                title: '',
+                headerTransparent: true,
+                headerStyle: {
+                    backgroundColor: 'transparent'
+                },
             }} />
             <ArtistsNavigator.Screen name='Track' tabBarVisible={false} component={STrackNav} options={{
                 headerShown: false
@@ -132,7 +136,7 @@ function TracksTab({navigation, route}) {
                     color: 'white',
                 },
                 headerRight: () => (
-                    <Ionicons name="information-circle" size={30} color={'#00FF56'} onPress={() => Alert.alert('Tracks Screen', 'These are your most listened songs. You can click on the song for more information')} />
+                    <Ionicons name="information-circle" style={{right: 5}} size={30} color={'#00FF56'} onPress={() => Alert.alert('Tracks Screen', 'These are your most listened songs. You can click on the song for more information')} />
                 ),
             }} />
             <TracksNavigator.Screen name='Track'  component={STrackNav} options={{
@@ -161,7 +165,7 @@ function STrackNav({route, navigation}) {
             }} />
             
             <SingleStrackNav.Screen name='Playlists' tabBarVisible={false}  component={Playlist} options={{
-                title: 'Playlists',
+                title: '',
                 headerTransparent: true,
                 headerStyle: {
                     backgroundColor: 'transparent'
