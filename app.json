@@ -25,6 +25,9 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#141414"
       },
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-3783119502769597~3128554893"
+      },
       "package": "com.vichmi.Spotify.Data"
     },
     "web": {

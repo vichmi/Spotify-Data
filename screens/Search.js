@@ -3,6 +3,14 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ScrollView,
 import { MaterialIcons } from '@expo/vector-icons'; 
 import axios from '../utils/apikit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+    AdMobBanner,
+    AdMobInterstitial,
+    PublisherBanner,
+    AdMobRewarded,
+    setTestDeviceIDAsync,
+  } from 'expo-ads-admob';
+  
 
 export default function Search({navigation}) {
     const [items, setItems] = useState({});
@@ -39,6 +47,7 @@ export default function Search({navigation}) {
                 <TouchableOpacity style={{position: 'absolute', right: 10, top: 4}}><MaterialIcons name="search" size={32} color="black" /></TouchableOpacity>
                 </KeyboardAvoidingView>
             </View>
+            {!preloadedItems && !loading ? <Text style={{color: 'white', alignSelf: 'center', marginTop: 10, fontSize: 20}}>Nothing to show</Text> : null}
 
             {!loading? <ScrollView style={{marginTop: 10}}>
                 {preloadedItems == null ? null: <Text style={{color: 'white'}}>Previously</Text> }

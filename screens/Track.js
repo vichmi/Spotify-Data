@@ -169,7 +169,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     borderTopWidth: 1.5,
-    borderTopColor: '#141414'
+    borderTopColor: '#141414',
+    marginBottom: 50
   },
   addOptionIcon: {
       textAlign: 'center',

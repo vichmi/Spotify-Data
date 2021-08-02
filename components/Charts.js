@@ -3,6 +3,14 @@ import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, ActivityIn
 import axios from '../utils/apikit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import refreshAccessToken from '../utils/refreshAccessToken';
+import {
+  AdMobBanner,
+  AdMobInterstitial,
+  PublisherBanner,
+  AdMobRewarded,
+  setTestDeviceIDAsync,
+} from 'expo-ads-admob';
+
 
 export default function ArtistsCom({route, navigation}) {
     const type = route.name.toLowerCase();
@@ -39,7 +47,7 @@ export default function ArtistsCom({route, navigation}) {
       <ActivityIndicator size="large" color="#00ff00" />
     </View>) : (
       <View style={styles.container}>
-            <ScrollView>
+            <ScrollView style={{marginTop: 40}}>
                 <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginBottom: 30}}>
                     {items.length > 0 ? items.map((item, index) => {
                         return (
@@ -53,8 +61,10 @@ export default function ArtistsCom({route, navigation}) {
                                   }
                                   navigation.navigate(screen, {params: {id: item.id}});
                                 }}>
+                                  <View style={{width: '100%', height: '100%', borderRadius: 6, position: 'relative', justifyContent: 'flex-end'}}>
                                     <Image style={{width: '100%', height: '100%', borderRadius: 6}} source={{uri:  item.imageUrl}} />
-                                    <View style={{position: 'absolute', bottom: 0, left:4,  height: 20, width: '100%', backgroudColor: 'red'}}><Text style={{color: 'white', textShadowColor: 'black', textShadowOffset: {width: -1, height: 1},textShadowRadius: 5}}>{index+1}. {item.name}</Text></View>
+                                    <Text style={{color: 'white', position: 'absolute', textShadowColor: 'black', textShadowOffset: {width: -1, height: 1},textShadowRadius: 5}}>{index+1}. {item.name}</Text>
+                                  </View>
                                 </TouchableOpacity>
                             </View>
                         )
@@ -86,7 +96,7 @@ const styles = StyleSheet.create({
     },
     footer: {
       position: 'absolute',
-      bottom: 0,
+      top: 0,
       width: '100%',
       justifyContent: 'space-around'
     }
