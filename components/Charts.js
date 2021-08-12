@@ -10,6 +10,7 @@ import {
   AdMobRewarded,
   setTestDeviceIDAsync,
 } from 'expo-ads-admob';
+import PayC from './PayC'
 
 
 export default function ArtistsCom({route, navigation}) {
@@ -19,6 +20,7 @@ export default function ArtistsCom({route, navigation}) {
     const [refresh_token, setRefresh_token] = useState('');
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showContent, setShowContent] = useState(true);
 
     useEffect(() => {
 
@@ -35,8 +37,21 @@ export default function ArtistsCom({route, navigation}) {
           setLoading(false);
         }
       };
+      
+      const getDataAllAsync = async () => {
+        try {
+          refreshAccessToken();
+          const res2 = await axios.get(`/api/topAll/${type}?time_range=${time}&limit=50&access_token=${await AsyncStorage.getItem('access_token')}`);
+          setItems(res2.data);
+        } catch(error) { 
+          
+        } finally {
+          setLoading(false);
+        }
+      };
 
-        getDataAsync();
+        getDataAllAsync();
+
         return () => {
             
         };
@@ -48,9 +63,33 @@ export default function ArtistsCom({route, navigation}) {
     </View>) : (
       <View style={styles.container}>
             <ScrollView style={{marginTop: 40}}>
-                <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginBottom: 30}}>
+                <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginBottom: showContent ? 130 : 30}}>
                     {items.length > 0 ? items.map((item, index) => {
-                        return (
+                        return (index+1)%25 == 0 ? (
+                          <View key={index} style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginBottom: 10}}>
+                                <TouchableOpacity style={{width: 150, height: 150, margin: 10}}  onPress={async e => {
+                                  let screen = '';
+                                  if(type == 'artists') {
+                                    screen = 'Artist'
+                                  }else if(type == 'tracks') {
+                                    screen = 'Track';
+                                  }
+                                  navigation.navigate(screen, {params: {id: item.id}});
+                                }}>
+                                  <View style={{width: '100%', height: '100%', borderRadius: 6, position: 'relative', justifyContent: 'flex-end'}}>
+                                    <Image style={{width: '100%', height: '100%', borderRadius: 6}} source={{uri:  item.imageUrl}} />
+                                    <Text style={{color: 'white', position: 'absolute', textShadowColor: 'black', textShadowOffset: {width: -1, height: 1},textShadowRadius: 5}}>{index+1}. {item.name}</Text>
+                                  </View>
+                                </TouchableOpacity>
+                                <AdMobBanner
+                                  bannerSize="banner"
+                                  adUnitID="ca-app-pub-3783119502769597/7581022953"
+                                  servePersonalizedAds={false}
+                                  onDidFailToReceiveAdWithError={(err) => console.log(err)} 
+                                   />
+                            </View>
+
+                        ) : (
                             <View key={index} style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginBottom: 10}}>
                                 <TouchableOpacity style={{width: 150, height: 150, margin: 10}}  onPress={async e => {
                                   let screen = '';

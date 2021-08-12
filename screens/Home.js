@@ -5,23 +5,35 @@ import axios from '../utils/apikit';
 import refreshAccessToken from '../utils/refreshAccessToken'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView } from 'react-native-gesture-handler';
-import * as Progress from 'react-native-progress';
-import convert from 'convert-seconds';
 import millify from "millify";
-import {
-    AdMobBanner,
-    AdMobInterstitial,
-    PublisherBanner,
-    AdMobRewarded,
-    setTestDeviceIDAsync,
-  } from 'expo-ads-admob';
-import { useAsyncStorage } from '@react-native-async-storage/async-storage';
+import { FlatList,VirtualizedLists, Modal } from 'react-native';
 
 
 export default function Home({navigation, route}) {
     const [recently, setRecently] = useState([]);
     const [loading, setLoading] = useState(true);
     const [profile, setProfile] = useState({});
+    const [modalVisible, setModalVisible] = useState(true);
+
+    const RenderTracks = ({track, index}) => {
+        let artists = [...track.artists];
+        for(let i=0;i<artists.length;i++) {
+            artists[i] = track.artists[i].name;
+        }
+        let artistString = artists.join(', ');
+        return (
+            <TouchableOpacity onPress={e => {
+                navigation.navigate('Track', {params: {id: track.id}});
+            }} style={{backgroundColor: 'none', flexDirection: 'row', marginBottom: 10, width: '100%', borderRadius: 10, left: 5}}>
+                <Image source={{uri: track.imageUrl}} style={{width: 80, height: 80, borderRadius: 5}} />
+                <View style={{textAlign: 'left', justifyContent: 'center', flex: 1, width: '100%'}}>
+                    <Text style={{color: 'white', left: 5}}>{track.name}</Text>
+                    <Text style={{color: '#bdbdbd', left: 5}}>{artistString}</Text>
+                    <Text style={{color: 'white', right: 20, position: 'absolute', fontSize: 17}}>{index+1}</Text>
+                </View>
+            </TouchableOpacity>
+        )
+    }
 
     useEffect(() => {
         const getItems = async () => {
@@ -32,6 +44,9 @@ export default function Home({navigation, route}) {
 
                 const res3 = await axios.get(`/api/me?access_token=${await AsyncStorage.getItem('access_token')}`);
                 setProfile(res3.data);
+
+                const res4 = await axios.get(`/api/recently?access_token=${await AsyncStorage.getItem('access_token')}&limit=30`);
+                setRecently(res4.data);
             }catch(err){
                 console.log(err);
             }finally{
@@ -39,9 +54,7 @@ export default function Home({navigation, route}) {
             }
         }
         getItems();
-        getItems();
     }, []);
-
 
     return loading ? <ActivityIndicator style={styles.container} size="large" color="#00ff00" /> : (
         <View style={[styles.container]}>
@@ -60,43 +73,16 @@ export default function Home({navigation, route}) {
                     <View style={{marginBottom: 80}}>
                         <Text style={styles.h2}>Recently played</Text>
                         
-                        {recently ? recently.map((track, index) => {
-                            let artists = [...track.artists];
-                            for(let i=0;i<artists.length;i++) {
-                                artists[i] = track.artists[i].name;
-                            }
-                            let artistString = artists.join(', ');
-                            return (
-                                <TouchableOpacity onPress={e => {
-                                    navigation.navigate('Track', {params: {id: track.id}});
-                                }} key={index} style={{backgroundColor: 'none', flexDirection: 'row', marginBottom: 10, width: '100%', borderRadius: 10, left: 5}}>
-                                    <Image source={{uri: track.imageUrl}} style={{width: 80, height: 80, borderRadius: 5}} />
-                                    <View style={{textAlign: 'left', justifyContent: 'center', flex: 1, width: '100%'}}>
-                                        <Text style={{color: 'white', left: 5}}>{track.name}</Text>
-                                        <Text style={{color: '#bdbdbd', left: 5}}>{artistString}</Text>
-                                        <Text style={{color: 'white', right: 20, position: 'absolute', fontSize: 17}}>{index+1}</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            )
-                        }) : null}
+                        {recently ? <FlatList
+                            data={recently}
+                            renderItem={({item, index}) => <RenderTracks track={item} index={index} />}
+                            keyExtractor={(item, index) => String(index)}
+                        /> :null}
                     </View>
                 </View>
             </ScrollView>
         </View>
     )
-}
-
-function convertTime(sec) {
-    let string = '';
-    if(sec > 60) {
-        if(sec < 600) {
-            if(sec % 60 < 10) string = `0${(sec/60).toFixed(0)}:0${sec%60}`; else `0${(sec/60).toFixed(0)}:${sec%60}`
-        }else{
-            if(sec % 60 < 10) string = `${(sec/60).toFixed(0)}:0${sec%60}`; else `${(sec/60).toFixed(0)}:${sec%60}`
-        }
-    }else{
-        if(sec % 60 < 10) string = `00:0${sec%60}`; else `00:${sec%60}`
-    }
 }
 
 const styles = StyleSheet.create({

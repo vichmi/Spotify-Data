@@ -3,10 +3,8 @@ import axios from '../utils/apikit';
 import React, {useState, useEffect} from 'react'
 import { View, Text, ActivityIndicator, StyleSheet, ScrollView, Image, StatusBar, Dimensions } from 'react-native'
 import { ImageBackground } from 'react-native';
-import millify from "millify";
 import { TouchableOpacity } from 'react-native';
 import refreshAccessToken from '../utils/refreshAccessToken';
-import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
 
 export default function Artist({navigation, route}) {
 

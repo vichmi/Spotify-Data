@@ -2,11 +2,12 @@ import React from 'react'
 import { View, Text } from 'react-native'
 import {WebView} from 'react-native-webview'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { CommonActions } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar'
 
 export default function Browser({route, navigation}) {
     return (
         <View style={{flex: 1}}>
+            <StatusBar />
             <WebView source={{uri: route.params.url}} injectedJavaScript={"window.ReactNativeWebView.postMessage(document.body.innerText)"} javaScriptEnabled={true} onMessage={async (e) => {
                 if(e.nativeEvent.url.includes('?code=')) {
                     let data = JSON.parse(e.nativeEvent.data)

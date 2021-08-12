@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { View, Text } from 'react-native'
 
 import { NavigationContainer, getFocusedRouteNameFromRoute } from '@react-navigation/native';
@@ -14,10 +14,46 @@ import Search from '../screens/Search.js';
 import Playlist from '../screens/Playlist.js';
 import { Button } from 'react-native';
 import { Alert } from 'react-native';
+import {
+    AdMobBanner,
+    AdMobInterstitial,
+    PublisherBanner,
+    AdMobRewarded,
+    setTestDeviceIDAsync,
+  } from 'expo-ads-admob';
 
 const Tab = createBottomTabNavigator();
 
 export default function AppStack({route}) {
+    const [showAds, setShowAds] = useState(true);
+
+    useEffect(() => {
+        AsyncStorage.getItem('profile')
+        .then(async res => {
+            if(res == 'premium') {
+                setShowAds(false);
+            }else{
+                await AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/1033173712'); // Test ID, Replace with your-admob-unit-id
+                await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: true});
+                await AdMobInterstitial.showAdAsync();
+            }
+        })
+    }, []);
+
+    return (
+        <>
+            <Navigator />
+            {showAds ? <AdMobBanner
+            bannerSize="smartBannerPortrait"
+            adUnitID="ca-app-pub-3783119502769597/4160411448"
+            servePersonalizedAds={false}
+            onDidFailToReceiveAdWithError={(err) => console.log(err)} 
+            style={{position: 'absolute', bottom: 50}} /> : null}
+        </>
+    )
+}
+
+function Navigator() {
     return (
         <Tab.Navigator tabBarOptions={{activeTintColor: 'white', inactiveTintColor: '#999999', style: {backgroundColor: 'black'}}}>
             <Tab.Screen name='Home' component={HomeTab} options={{

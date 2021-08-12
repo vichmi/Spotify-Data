@@ -2,20 +2,19 @@ import * as React from 'react';
 import {useState, useEffect, useRef} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from '../utils/apikit';
-import { StyleSheet, Linking, Button, Animated, TouchableOpacity, Image, ActivityIndicator, ScrollView, Text, View, StatusBar, ImageBackground, Dimensions } from 'react-native';
+import { StyleSheet, TouchableOpacity, Image, ActivityIndicator, ScrollView, Text, View, StatusBar, ImageBackground, Dimensions, Animated } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons'; 
-import PercentageBar from 'react-native-percentage-reactangle';
 import refreshAccessToken from '../utils/refreshAccessToken'
 import { Alert } from 'react-native';
+import { CommonActions } from '@react-navigation/native';
+
 
 export default function Track({navigation, route}) {
     const [item, setItem] = useState({});
     const [loading, setLoading] = useState(true);
-    const [showPlaylists, setShowPlaylists] = useState(false);
-    const [access_token, setAccess_token] = useState('');
-    const [playlists, setPlaylists] = useState([]);
-    const [stats, setStats] = useState([]);
+    const [artistSongs, setArtistSongs] = useState([]);
     const [audioAnalysis, setAudioAnalysis] = useState({});
+    const [premium, setPremium] = useState(false);
     
     async function play(uri, trackNumber) {
         try {
@@ -39,17 +38,25 @@ export default function Track({navigation, route}) {
 
                 const res = await axios.get(`/api/track/${route.params.params.id}?access_token=${await AsyncStorage.getItem('access_token')}`);
                 setItem(res.data);
-                
 
-                const res3 = await axios.get(`/api/trackAnal/${res.data.id}?access_token=${await AsyncStorage.getItem('access_token')}`);
-                setAudioAnalysis(res3.data);
+                const res2 = await axios.get(`/api/trackAnal/${res.data.id}?access_token=${await AsyncStorage.getItem('access_token')}`);
+                setAudioAnalysis(res2.data);
 
+                const res3 = await axios.get(`/api/artist/${res.data.artists.artists[0].id}/top-tracks?access_token=${await AsyncStorage.getItem('access_token')}`);
+                setArtistSongs(res3.data.tracks);
             }catch(err){
                 console.log(err);
             }finally{
                 setLoading(false);
             }
         };
+
+        AsyncStorage.getItem('profile')
+        .then(res => {
+            if(res == 'premium') {
+                setPremium(true);
+            }
+        })
 
         getItems();
     }, []);
@@ -88,11 +95,36 @@ export default function Track({navigation, route}) {
                         })}
                     </View>
                 </View>
+                <View style={{alignItems: 'center', flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
+                    <View style={{backgroundColor: '#141414', width: 150, height: 80, justifyContent: 'center', borderRadius: 7}}>
+                        <Text style={{color: 'white', textAlign: 'center', justifyContent: 'flex-start'}}>Tempo</Text>
+                        <Text style={{color: 'white', textAlign: 'center', justifyContent: 'flex-end'}}>{audioAnalysis.tempo} BPM</Text>
+                    </View>
+                    <View style={{backgroundColor: '#141414', width: 150, height: 80, justifyContent: 'center', borderRadius: 7}}>
+                        <Text style={{color: 'white', textAlign: 'center', justifyContent: 'flex-start'}}>Loudness</Text>
+                        <Text style={{color: 'white', textAlign: 'center', justifyContent: 'flex-end'}}>{audioAnalysis.loudness} BPM</Text>
+                    </View>
+                </View>
+
+            <View style={{alignItems: 'center', marginTop: 25}}>
+                <Text style={styles.h2}>More tracks from {item.artists.artists[0].name}</Text>
+                <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-evenly'}}>
+                    {artistSongs.map((song, index) => {
+                        return (
+                            <View key={index} style={{backgroundColor: '#141414', borderRadius: 6, alignItems: 'center', marginBottom: 10}}>
+                                <ImageBackground source={{uri: song.album.images[1].url}} style={{width: 150, height: 150, borderRadius: 6}}>
+                                    <Text style={{color: 'white', position: 'absolute', textShadowColor: 'black', textShadowOffset: {width: -1, height: 1}, textShadowRadius: 7, bottom: 0}}>{song.name}</Text>
+                                </ImageBackground>
+                            </View>
+                        )
+                    })}
+                </View>
+            </View>
             </ScrollView>
             
 
             <View style={styles.addOptionsContainer}>
-                <View style={styles.addOptionsContainer2}>
+                <View style={[styles.addOptionsContainer2, {marginBottom: premium ? 0 : 50}]}>
                     <TouchableOpacity style={styles.addOptionIcon} onPress={async e => play(item.albumUri, item.trackNumber)}>
                         <MaterialIcons name="play-circle-fill" size={32} color="white" />
                         <Text style={{color: 'white'}}>Play Now</Text>
@@ -169,8 +201,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     borderTopWidth: 1.5,
-    borderTopColor: '#141414',
-    marginBottom: 50
+    borderTopColor: '#141414'
   },
   addOptionIcon: {
       textAlign: 'center',
